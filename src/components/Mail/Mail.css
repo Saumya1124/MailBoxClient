@@ -1,0 +1,47 @@
+.para{
+    background-color: rgb(244, 227, 207);
+    padding: 2px 15px 2px 15px;
+    border-radius: 30px;
+    margin-right: 10px;
+}
+
+.link1{
+    text-decoration: none;
+    color:  rgb(75, 75, 168);
+    font-weight: bold;
+}
+.btn button{
+    background-color: white;
+    color: rgb(75, 75, 168);
+    border: 1px solid rgb(75, 75, 168);
+    border-radius: 20px;
+}
+.verifyBtn button{
+    height: 40px;
+    width: 120px;
+    background-color: white;
+    color:rgb(75, 75, 168) ;
+    border: 1px solid rgb(75, 75, 168);
+    border-radius: 20px;
+    margin: 10px;
+}
+.addExpense button{
+    height: 40px;
+    width: 180px;
+    background-color: rgb(75, 75, 168);
+    color: white;
+    border: none;
+}
+.dark{
+    background-color: black;
+}
+.dark h4{
+    color: white;
+}
+.dark label{
+    color: white;
+}
+.dark .hr{
+    width: 100%;
+    border-bottom: 1px solid white;
+}
