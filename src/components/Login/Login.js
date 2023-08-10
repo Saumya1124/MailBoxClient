@@ -4,6 +4,8 @@ import './Login.css';
 import { Form , Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../store/authSlice';
 
 
 const Login = () => {
@@ -14,6 +16,8 @@ const Login = () => {
     const [isLoading , setIsLoading] = useState(false)
 
     const history = useHistory()
+
+    const dispatch = useDispatch()
 
     const submitHandler = async(event) => {
         event.preventDefault()
@@ -40,7 +44,8 @@ const Login = () => {
         if(res.ok){
             res.json().then( data => {
                 console.log('Logged In successfully.' , data)
-                history.replace('/mail')
+                dispatch(authActions.logIn({email : data.email , token : data.idToken}))
+                history.replace('/postMail')
 
             })
         }
