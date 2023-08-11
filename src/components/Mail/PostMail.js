@@ -32,7 +32,7 @@ const PostMail = () => {
         const recieverMail = to.split('@')
         const recieverMailData = recieverMail[0]
 
-        const senderMail = auth.loggedEmail.split('@');
+        const senderMail = localStorage.getItem('email').split('@');
         const senderMailData = senderMail[0]
 
 
@@ -44,7 +44,8 @@ const PostMail = () => {
                 to : to,
                 sender : senderMailData,
                 subject : subject,
-                message : message
+                message : message,
+                read : false
                 
             })
         })
@@ -103,7 +104,7 @@ const PostMail = () => {
  
     return(
         <Fragment>
-            <div className="form d-flex justify-content-center align-items-center">
+            <div className="form d-flex justify-content-center ">
                 <Form className="col-lg-5 col-md-6 col-12" onSubmit={submitHandler}>
                     <FloatingLabel label="To">
                         <Form.Control type="email" placeholder="To" ref={toRef}/>

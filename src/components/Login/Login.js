@@ -43,8 +43,9 @@ const Login = () => {
 
         if(res.ok){
             res.json().then( data => {
+                
                 console.log('Logged In successfully.' , data)
-                dispatch(authActions.logIn({email : data.email , token : data.idToken}))
+                dispatch(authActions.logIn({email : data.email , token : data.idToken }))
                 history.replace('/mail')
 
             })
