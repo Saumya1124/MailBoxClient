@@ -42,6 +42,7 @@ const PostMail = () => {
             method : 'POST',
             body : JSON.stringify({
                 to : to,
+                sender : senderMailData,
                 subject : subject,
                 message : message
                 
@@ -72,6 +73,7 @@ const PostMail = () => {
             method : 'POST',
             body : JSON.stringify({
                 to : to,
+                senderMail : senderMailData,
                 subject : subject,
                 message : message
                 

@@ -5,6 +5,7 @@ import { Route, Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import Login from './components/Login/Login';
 import Mail from './components/Mail/Mail';
 import PostMail from './components/Mail/PostMail';
+import InboxMail from './components/Mail/InboxMail';
 
 function App() {
   return (
@@ -30,6 +31,10 @@ function App() {
 
             <Route path='/postMail'>
                   <PostMail />
+            </Route>
+
+            <Route path='/inbox'>
+                  <InboxMail />
             </Route>
       </Switch>
         
