@@ -19,40 +19,10 @@ const InboxMail = () => {
 
     const dispatch = useDispatch()
 
-    const [selectedEmail, setSelectedEmail] = useState(null);
-
     const [isOpenMail , setIsOpenMail] = useState(false)
 
-    // const history = useHistory()
-    const history = useHistory()
-
-    useEffect(()=>{
-
-        const res = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/inbox.json`)
-
-
-        res.then( res => {
-
-            if(res.ok){
-                res.json().then(data => {
-                    console.log('Inbox data', data)
-                    setInboxMail(Object.values(data))
-                    setInboxMail(data)
-                    dispatch(inboxActions.getMessages(data))
-                    dispatch(inboxActions.unReadMail(Object.values(data)))
-                })
-            }
-            else{
-                res.json().then(err => {
-                    console(err)
-                })
-            }
-        })
-
-    } , [])
 
     
-
     const setKey = (key) => {
         localStorage.setItem('keyto',key)
         // dispatch(inboxActions.setRead())
@@ -71,7 +41,6 @@ const InboxMail = () => {
             if(res.ok){
                 res.json().then(data => {
                      console.log(data)
-                     setSelectedEmail(inBoxMail[key])
                      
                 })
             }
@@ -86,12 +55,67 @@ const InboxMail = () => {
 
     }
 
-    const handleClose = () => {
-        setSelectedEmail(null);
-      };
+
+    useEffect(()=>{
+
+        if (!userMailData) {
+            console.log("Email not found in localStorage");
+            return;
+        }
+
+        const res = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/inbox.json`)
+
+        res.then( res => {
+
+            if(res.ok){
+                res.json().then(data => {
+                    console.log('Inbox data', data)
+                    setInboxMail(Object.values(data))
+                    setInboxMail(data)
+                    dispatch(inboxActions.getMessages(data))
+                    dispatch(inboxActions.unReadMail(Object.values(data)))
+                })
+            }
+            else{
+                res.json().then(err => {
+                    console(err)
+                })
+            }
+        })
+        .catch( (err)=> {
+            console.log(err)
+        })
+
+    } , [setKey])
+
+    
+
+
 
     const closeMail = () => {
         setIsOpenMail(false)
+    }
+
+    const deleteHandler = (key) => {
+        // const key = localStorage.getItem('keyto')
+        const deleteData = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/inbox/${key}.json`,{
+            method : 'DELETE',
+        })
+
+        deleteData.then( res => {
+            if(res.ok){
+                res.json().then(data => {
+                    console.log(data)
+                    const updatedMessages = {...inBoxMail}
+                    delete updatedMessages[key]
+                    setInboxMail(updatedMessages)
+                })
+
+            }
+            else{
+                console.log('Error occured.')
+            }
+        })
     }
 
     return (
@@ -99,14 +123,17 @@ const InboxMail = () => {
             <div>
 
                 {!isOpenMail &&
+
                    <Table striped bordered hover variant="light" className="container">
                         
+                    
                         <tbody>
-                        
                         { Object.keys(inBoxMail).reverse().map((key,index)=>(
-                           
-                            <tr key={key} onClick={() => {setKey(key)}}>
-                                {!inBoxMail[key].read && 
+
+                            <tr key={key}>
+
+                                <td onClick={() => {setKey(key)}}>
+                                {!inBoxMail[key].read ?
                                 <span
                                     style={{
                                         display: "inline-block",
@@ -117,15 +144,35 @@ const InboxMail = () => {
                                         marginRight: "5px",
                                     }}
                                 >
-                                </span>}
-                                <td><b>{inBoxMail[key].sender}</b></td>
-                                <td>{inBoxMail[key].subject}</td>
-                                <td>{inBoxMail[key].message}</td>
+                                </span> :
+                                
+                                <span
+                                    style={{
+                                        display: "inline-block",
+                                        width: "10px",
+                                        height: "10px",
+                                        borderRadius: "50%",
+                                        backgroundColor: "green",
+                                        marginRight: "5px",
+                                    }}
+                                >
+                                </span>
+                                
+                                }
+                                </td>
+                                <td onClick={() => {setKey(key)}}><b>{inBoxMail[key].sender}</b></td>
+                                <td onClick={() => {setKey(key)}}>{inBoxMail[key].subject}</td>
+                                <td onClick={() => {setKey(key)}}>{inBoxMail[key].message}</td>
+                                <td><Button onClick={() => {deleteHandler(key)}}>Delete</Button></td>
                                
                             </tr>
+
+                           
+                            
                             
                         )) }
                         </tbody>
+                        
                     </Table>
 
                 }

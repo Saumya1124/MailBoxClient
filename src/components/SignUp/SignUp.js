@@ -3,6 +3,7 @@ import './SignUp.css';
 
 import { Form , Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 
@@ -11,6 +12,8 @@ const SignUp = () => {
     const emailInputRef = useRef();
     const passwordRef = useRef();
     const confirmPasswordRef = useRef();
+
+    const history = useHistory()
 
     const submitHandler = (event) => {
         event.preventDefault()
@@ -41,6 +44,7 @@ const SignUp = () => {
     
                     res.json().then( data => {
                         console.log('New User created')
+                        history.replace('/login')
                     })
                 }
     
