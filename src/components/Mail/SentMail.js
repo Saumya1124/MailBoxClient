@@ -112,34 +112,6 @@ const SentMail = () => {
 
                             <tr key={key}>
 
-                                <td onClick={() => {setKey(key)}}>
-                                {!sentMail[key].read ?
-                                <span
-                                    style={{
-                                        display: "inline-block",
-                                        width: "10px",
-                                        height: "10px",
-                                        borderRadius: "50%",
-                                        backgroundColor: "blue",
-                                        marginRight: "5px",
-                                    }}
-                                >
-                                </span> :
-                                
-                                <span
-                                    style={{
-                                        display: "inline-block",
-                                        width: "10px",
-                                        height: "10px",
-                                        borderRadius: "50%",
-                                        backgroundColor: "green",
-                                        marginRight: "5px",
-                                    }}
-                                >
-                                </span>
-                                
-                                }
-                                </td>
                                 <td onClick={() => {setKey(key)}}><b>{sentMail[key].to}</b></td>
                                 <td onClick={() => {setKey(key)}}>{sentMail[key].subject}</td>
                                 <td onClick={() => {setKey(key)}}>{sentMail[key].message}</td>

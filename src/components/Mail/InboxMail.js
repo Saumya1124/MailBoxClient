@@ -55,14 +55,10 @@ const InboxMail = () => {
 
     }
 
-
+    
     useEffect(()=>{
 
-        if (!userMailData) {
-            console.log("Email not found in localStorage");
-            return;
-        }
-
+    setInterval( () => {  
         const res = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/inbox.json`)
 
         res.then( res => {
@@ -86,7 +82,10 @@ const InboxMail = () => {
             console.log(err)
         })
 
+       
+    } , 2000)
     } , [])
+
 
     
 
