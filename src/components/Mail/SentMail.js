@@ -1,33 +1,27 @@
 import { Fragment, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ListGroup  , Table , Modal, Button} from "react-bootstrap";
-import { inboxActions } from "../../store/inboxSlice";
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import {Link} from 'react-router-dom';
+import { Button , Table } from "react-bootstrap";
 import OpenMail from "./OpenMail";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useDispatch } from "react-redux";
+import { outboxActions } from "../../store/outboxSlice";
+import OpenSentMail from "./OpenSentMail";
 
-const InboxMail = () => {
+const SentMail = () => {
 
-    const auth = useSelector(state => state.auth)
+    const userEmail = localStorage.getItem('email').split('@')
+    const userMailData = userEmail[0]
 
-    const inbox = useSelector(state => state.inbox)
-
-    const userMail = localStorage.getItem('email').split('@')
-    const userMailData = userMail[0]
-
-    const [inBoxMail , setInboxMail] = useState([])
-
-    const dispatch = useDispatch()
+    const [sentMail , setSentMail] = useState([])
 
     const [isOpenMail , setIsOpenMail] = useState(false)
 
+    const dispatch = useDispatch()
 
-    
     const setKey = (key) => {
         localStorage.setItem('keyto',key)
         // dispatch(inboxActions.setRead())
 
-        const res1 = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/inbox/${key}.json`,{
+        const res1 = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/outbox/${key}.json`,{
             method : 'PATCH',
             body : JSON.stringify({
                 read : true
@@ -55,42 +49,29 @@ const InboxMail = () => {
 
     }
 
+    useEffect( () =>  {
 
-    useEffect(()=>{
-
-        if (!userMailData) {
-            console.log("Email not found in localStorage");
-            return;
-        }
-
-        const res = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/inbox.json`)
+        const res = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/outbox.json`)
 
         res.then( res => {
+        if(res.ok){
+            res.json().then(data => {
+                console.log('Outbox', data)
+                setSentMail(data)
+                dispatch(outboxActions.sentMessages(data))
 
-            if(res.ok){
-                res.json().then(data => {
-                    console.log('Inbox data', data)
-                    setInboxMail(Object.values(data))
-                    setInboxMail(data)
-                    dispatch(inboxActions.getMessages(data))
-                    dispatch(inboxActions.unReadMail(Object.values(data)))
-                })
-            }
-            else{
-                res.json().then(err => {
-                    console(err)
-                })
-            }
-        })
-        .catch( (err)=> {
-            console.log(err)
-        })
-
-    } , [])
-
-    
+            })
+        }
+        else{
+            res.json().then(data => {
+                console.log('Fetching sent mails failed!', data)
+            })
+        }
+    })
 
 
+    }, [])
+  
 
     const closeMail = () => {
         setIsOpenMail(false)
@@ -98,7 +79,7 @@ const InboxMail = () => {
 
     const deleteHandler = (key) => {
         // const key = localStorage.getItem('keyto')
-        const deleteData = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/inbox/${key}.json`,{
+        const deleteData = fetch(`https://expensetracker-af59e-default-rtdb.firebaseio.com/${userMailData}/outbox/${key}.json`,{
             method : 'DELETE',
         })
 
@@ -106,9 +87,9 @@ const InboxMail = () => {
             if(res.ok){
                 res.json().then(data => {
                     console.log(data)
-                    const updatedMessages = {...inBoxMail}
+                    const updatedMessages = {...sentMail}
                     delete updatedMessages[key]
-                    setInboxMail(updatedMessages)
+                    setSentMail(updatedMessages)
                 })
 
             }
@@ -121,19 +102,18 @@ const InboxMail = () => {
     return (
         <Fragment>
             <div>
-
                 {!isOpenMail &&
 
-                   <Table striped bordered hover variant="light" className="container">
+                <Table striped bordered hover variant="light" className="container">
                         
                     
                         <tbody>
-                        { Object.keys(inBoxMail).reverse().map((key,index)=>(
+                        { Object.keys(sentMail).reverse().map((key,index)=>(
 
                             <tr key={key}>
 
                                 <td onClick={() => {setKey(key)}}>
-                                {!inBoxMail[key].read ?
+                                {!sentMail[key].read ?
                                 <span
                                     style={{
                                         display: "inline-block",
@@ -160,14 +140,14 @@ const InboxMail = () => {
                                 
                                 }
                                 </td>
-                                <td onClick={() => {setKey(key)}}><b>{inBoxMail[key].sender}</b></td>
-                                <td onClick={() => {setKey(key)}}>{inBoxMail[key].subject}</td>
-                                <td onClick={() => {setKey(key)}}>{inBoxMail[key].message}</td>
+                                <td onClick={() => {setKey(key)}}><b>{sentMail[key].to}</b></td>
+                                <td onClick={() => {setKey(key)}}>{sentMail[key].subject}</td>
+                                <td onClick={() => {setKey(key)}}>{sentMail[key].message}</td>
                                 <td><Button onClick={() => {deleteHandler(key)}}>Delete</Button></td>
-                               
+                            
                             </tr>
 
-                           
+                        
                             
                             
                         )) }
@@ -185,14 +165,13 @@ const InboxMail = () => {
                             </Button>
                             
                         </div>
-                        <OpenMail />
+                        <OpenSentMail />
                     </div>
                 }
 
             </div>
-
         </Fragment>
     )
 }
 
-export default InboxMail;
+export default SentMail

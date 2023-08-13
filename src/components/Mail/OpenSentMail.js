@@ -2,20 +2,20 @@ import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 
 
-const OpenMail = () => {
+const OpenSentMail = () => {
 
 
-    const inbox = useSelector(state=> state.inbox.messages)
+    const outbox = useSelector(state=> state.outbox.messages)
 
     const key = localStorage.getItem('keyto')
 
-    const message = inbox[key]
+    const message = outbox[key]
 
     return(
         <Fragment>
                 
                     <div>
-                         <p><b>From :</b>{message.to}</p>
+                         <p><b>To :</b>{message.to}</p>
                          <p><b>{message.subject}</b></p>
                          <hr />
                          <p>{message.message}</p>
@@ -26,4 +26,4 @@ const OpenMail = () => {
     )
 }
 
-export default OpenMail;
+export default OpenSentMail;

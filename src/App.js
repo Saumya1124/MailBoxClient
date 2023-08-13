@@ -8,6 +8,7 @@ import PostMail from './components/Mail/PostMail';
 import InboxMail from './components/Mail/InboxMail';
 import { useSelector } from 'react-redux';
 import OpenMail from './components/Mail/OpenMail';
+import SentMail from './components/Mail/SentMail';
 
 function App() {
 
@@ -53,6 +54,9 @@ function App() {
 
             <Route path='/openMail'>
                   <OpenMail />
+            </Route>
+            <Route path='sentMail'>
+                  <SentMail />
             </Route>
 
       </Switch>

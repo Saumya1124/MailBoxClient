@@ -7,11 +7,13 @@ import InboxMail from "./InboxMail";
 import { useDispatch, useSelector } from "react-redux";
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { authActions } from '../../store/authSlice';
+import SentMail from "./SentMail";
 
 const Mail = () => {
 
     const [isCompose , setIsCompose] = useState(false)
     const [isInbox , setIsInbox] = useState(false)
+    const [isSent , setIsSent] = useState(false)
 
     const dispatch = useDispatch()
 
@@ -31,10 +33,17 @@ const Mail = () => {
     const composeHandler = () => {
         setIsInbox(false)
         setIsCompose(true)
+        setIsSent(false)
     }
     const inboxHandler = () => {
         setIsInbox(true)
         setIsCompose(false)
+        setIsSent(false)
+    }
+    const sentHandler = () =>  {
+        setIsCompose(false)
+        setIsInbox(false)
+        setIsSent(true)
     }
 
     const auth = useSelector(state => state.auth)
@@ -78,10 +87,13 @@ const Mail = () => {
                         <Button variant="info" onClick={composeHandler} className="col-6">Compose</Button>
                         <br />
                         <Button className="col-6" onClick={inboxHandler} >Inbox ({inbox.unReadCount})</Button>
+                        <br />
+                        <Button className="col-6" onClick={sentHandler} >Sent</Button>
                    </div>
                    <div className="col-lg-8 col-md-8 col-11">
                         {isCompose && <PostMail />}
                         {isInbox && <InboxMail />}
+                        {isSent && <SentMail />}
                         
                    </div>
               </div>
